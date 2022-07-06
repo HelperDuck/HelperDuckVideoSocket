@@ -3,14 +3,16 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 dotenv.config();
 import cors from 'cors';
+import router from './router';
 import { createServer } from 'http';
-import { Server, Socket } from 'socket.io';
-const PORT = process.env.PORT || 4020;
+import { Server } from 'socket.io';
+const PORT = process.env.PORT || 3002;
 
 const app = Express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(Express.json());
+app.use(router);
 
 //HTTP server
 const httpServer = createServer(app);
@@ -57,7 +59,7 @@ io.on('connection', (socket: any) => {
   socket.on('screenToggling', (roomId: string) => {
     console.log('testing screenToggling', roomId);
     const participantsInRoom = participants[roomId];
-    console.log(participantsInRoom, 'participants AFTER ScreenToogling');
+    console.log(participantsInRoom, 'participants AFTER ScreenToggling');
     socket.broadcast.emit('renegotiate', participantsInRoom);
   });
 
@@ -91,7 +93,7 @@ io.on('connection', (socket: any) => {
 
 httpServer.listen(PORT, () => {
   try {
-    console.log(`🦆🦆🦆 Server is running at http://localhost:${PORT} 🦆🦆🦆`);
+    console.log(`🦆🦆🦆 Server is running at port:${PORT} 🦆🦆🦆`);
   } catch (err) {
     console.log('Error launching Server: ', err);
   }
